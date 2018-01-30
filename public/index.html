@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Planet - Around the world</title>
+    <script src="vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="gotham.css">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+
+      .fade-leave-active {
+        transition: opacity 2s;
+        z-index: 1
+      }
+
+      .fade-leave-to  {
+        opacity: 0
+      }
+
+      .imageFrame {
+        position: absolute;
+        top:0; right:0; bottom: 0; left:0;
+        overflow: hidden;
+      }
+
+      .imageFrame img {
+        width: 100%;
+      }
+
+      .label {
+        position: absolute;
+        opacity: 0.8;
+        background-color: rgb(0, 157, 164);
+        color: white;
+        bottom: 5%;
+        right: 5%;
+        padding: 1%;
+        text-align: right;
+        font-family: "Gotham SSm A","Gotham SSm B";
+        font-weight: bold;
+        border-radius: 20px;
+      }
+
+      .title { font-size: 320%; }
+      .subtitle { font-size: 200%; }
+    </style>
+
+    <script>
+window.onload = function(){
+  new Vue({
+    el: '#vue',
+    data: {
+      gallery: {},
+      toggle: true,
+      img1: {},
+      img2: {}
+    },
+
+    computed: {
+      layers: function(){
+        return [
+          {img: this.img1, v:  this.toggle, updateImage: function() { this.img1 = this.getRandomImage()}.bind(this)} ,
+          {img: this.img2, v: !this.toggle, updateImage: function() { this.img2 = this.getRandomImage()}.bind(this)}
+        ]
+      },
+    },
+
+    methods: {
+      getRandomImage: function() {
+        return this.gallery[Math.floor(Math.random() * this.gallery.length)];
+      },
+      swapLayers: function() {
+        this.toggle = !this.toggle;
+      },
+    },
+
+    created: function () {
+      fetch('index.json', {method: 'GET', mode: 'no-cors'})
+      .then(
+        function(response) {
+          return response.json();
+        }
+      )
+      .then(
+        function(response) {
+          this.gallery = response;
+          this.img1 = this.getRandomImage()
+          this.img2 = this.getRandomImage()
+
+          setInterval(this.swapLayers, 10000);
+        }.bind(this)
+      )
+      .catch(function(err) {
+        console.log('Error fetching index.json: ', err);
+      });
+    }
+  })
+}
+    </script>
+  </head>
+
+  <body>
+    <ul id="vue">
+      <li>
+        <transition v-for="layer in layers" name="fade" v-on:after-leave="layer.updateImage()">
+          <div v-show="layer.v" class="imageFrame">
+            <img :src="layer.img.image">
+            <span class="label">
+              <span class="title">{{ layer.img.title }}</span><br>
+              <span class="subtitle">{{ layer.img.subtitle }}</span>
+            </span>
+          </div>
+        </transition>
+      </li>
+    </ul>
+  </body>
+</html>
