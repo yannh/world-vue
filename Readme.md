@@ -9,4 +9,6 @@ Planet.com does not have CORS setup - therefore use get\_json.sh
 to download the index.json that contains the Gallery data and remove
 superfluous data.
 
-![Screenshot](bamako.jpg)
+![Screenshot](assets/bamako.jpg)
+
+[Demo](https://yannh.github.io/world-vue/)
