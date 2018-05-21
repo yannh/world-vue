@@ -11,4 +11,4 @@ superfluous data.
 
 ![Screenshot](assets/bamako.jpg)
 
-[Demo](https://yannh.github.io/world-vue/)
+[Demo](https://world-vue.mandragor.org/)
